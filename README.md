@@ -2,6 +2,8 @@
 
 This is a AWS Lambda function which posts AWS billing info to slack.
 
+![billing bot](https://github.com/azaazato/lambda_slack_aws_billing/blob/master/bot_image.png)
+
 
 ## Usage
 
@@ -13,7 +15,7 @@ HOOK_URL = 'https://hooks.slack.com/services/xxxxxxxxxxxxxxxx'
 SLACK_CHANNEL = '#xxxxxxxxxx'
 ```
 
-After set above items, deploy to your aws environmetn. Set scheduled Event to post slack everyday.
+After set above items, deploy to your aws environmet. Set scheduled Event to post slack everyday.
 
 ## Licence
 

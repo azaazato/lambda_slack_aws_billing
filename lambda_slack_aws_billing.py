@@ -11,6 +11,7 @@ from urllib2 import Request, urlopen, URLError, HTTPError
 HOOK_URL = os.getenv("HOOK_URL")
 SLACK_CHANNEL = os.getenv("SLACK_CHANNEL")
 CLOUD_WATCH_REGION = os.getenv("CLOUD_WATCH_REGION") 
+AWS_SERVICE = os.getenv("AWS_SERVICE") 
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -41,6 +42,7 @@ def get_billing_total(start_date, end_date):
     billing = res['Datapoints'][0]['Maximum']
     return billing
 
+	
 def get_billing_field(start_date, end_date, field):
     params = {
             'MetricName': 'EstimatedCharges',
@@ -87,12 +89,26 @@ def post_slack(message):
         exit(1)
 
 		
-def generate_slack_message()
+def generate_slack_message(start_date, end_date):
+	AWSDataTrensfer = get_billing_field(start_date, end_date, 'AWSDataTrensfer')
+	AWSLambda = get_billing_field(start_date, end_date, 'AWSLambda')
+	AWSMarketplace = get_billing_field(start_date, end_date, 'AWSMarketplace')
+	AWSQueueService = get_billing_field(start_date, end_date, 'AWSQueueService')
+	AWSCloudWatcha = get_billing_field(start_date, end_date, 'AWSCloudWatcha')
+	AWSEC2 = get_billing_field(start_date, end_date, 'AWSEC2')
+	AWSS3 = get_billing_field(start_date, end_date, 'AWSS3')
+	AWSSNS = get_billing_field(start_date, end_date, 'AWSSNS')
+	awskms = get_billing_field(start_date, end_date, 'awskms')
+	total = get_billing_total(start_date, end_date)
+	formatted_start_date = start_date.strftime("%Y-%m-%d")
+	formatted_end_date = end_date.strftime("%Y-%m-%d")
+	
+	message = 'Estimated charges for ' + AWS_SERVICE + ' between ' + formatted_start_date + ' to ' + formatted_end_date + ' is as follows: \n\n' + 'AWS Data Trensfer            US$ ' + AWSDataTrensfer + ' \n' + 'AWS Lambda                   US$ ' + AWSLambda + ' \n' + 'AWS Marketplace              US$ ' + AWSMarketplace + ' \n' + 'AWS Queue Service            US$ ' + AWSQueueService + ' \n' + 'AWS Cloud Watch              US$ ' + AWSCloudWatcha + ' \n' + 'AWS EC2                      US$ ' + AWSEC2 + ' \n' + 'AWS S3                       US$ ' + AWSS3 + ' \n' + 'AWS SNS                      US$ ' + AWSSNS + ' \n' + 'AWS Key Management Service   US$ ' + awskms + ' \n' + '-------------------------------------------\n' + 'Total                        US$ ' + total
+	return message
 	
 
 def lambda_handler(event, context):
 	start_date = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(1), datetime.time())
 	end_date = datetime.datetime.combine(datetime.date.today(), datetime.time())
-    billing = get_billing()
-    yesterday = datetime.date.today() - datetime.timedelta(1)
-    post_slack(yesterday.strftime("%Y-%m-%d"), billing)
+	message = generate_slack_message(start_date, end_date)
+    post_slack(message)

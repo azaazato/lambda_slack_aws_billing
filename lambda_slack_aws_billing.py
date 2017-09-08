@@ -3,17 +3,19 @@ from __future__ import print_function
 import boto3
 import datetime
 import json
+import os
 import logging
 from urllib2 import Request, urlopen, URLError, HTTPError
 
 # set your own environment
-HOOK_URL = 'https://hooks.slack.com/services/xxxxxxxxxxxxxxxx'
-SLACK_CHANNEL = '#xxxxxxxxxx'
+HOOK_URL = os.getenv("HOOK_URL")
+SLACK_CHANNEL = os.getenv("SLACK_CHANNEL")
+CLOUD_WATCH_REGION = os.getenv("CLOUD_WATCH_REGION") 
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-client = boto3.client('cloudwatch', region_name='us-east-1', endpoint_url='http://monitoring.us-east-1.amazonaws.com')
+client = boto3.client('cloudwatch', region_name=CLOUD_WATCH_REGION, endpoint_url='http://monitoring.'+ CLOUD_WATCH_REGION  +'.amazonaws.com')
 
 
 def get_billing():
@@ -33,6 +35,7 @@ def get_billing():
             ]
     }
     res = client.get_metric_statistics(**params)
+    print(res)
     if (res['ResponseMetadata']['HTTPStatusCode'] != 200):
         logger.error('Failed to get billing metrics.')
         exit(1)
@@ -42,14 +45,13 @@ def get_billing():
 
 def post_slack(date, billing):
     message = {
-            'channel': SLACK_CHANNEL,
-            'text': "{}までのAWS費用は${}でした。".format(date, billing)
+            'text': "Total estimated charges for AWS04  on {} is US${}".format(date, billing)
             }
     req = Request(HOOK_URL, json.dumps(message))
     try:
         response = urlopen(req)
         response.read()
-        logger.info("Message posted to %s", message['channel'])
+        logger.info("Message posted to")
     except HTTPError as e:
         logger.error("Request failed: %d %s", e.code, e.reason)
         exit(1)

@@ -7,20 +7,15 @@ This is a AWS Lambda function which posts AWS billing info to slack.
 
 ## Usage
 
-Set your environment HOOK_URL and SALCK_CHANNEL.
-
-```
-# set your own environment
-HOOK_URL = 'https://hooks.slack.com/services/xxxxxxxxxxxxxxxx'
-SLACK_CHANNEL = '#xxxxxxxxxx'
-```
+Set your environment CLOUD_WATCH_REGION, AWS_SERVICE(name), HOOK_URL and SALCK_CHANNEL values.
 
 After set above items, deploy to your aws environmet. Set scheduled Event to post slack everyday.
 
-## Licence
-
-[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
-
-## Author
+## Add A lambda role from root in N.Virginia to get access for billing.
+ 
+## Modified from
 
 [azaazato](https://github.com/azaazato)
+
+
+

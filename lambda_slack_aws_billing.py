@@ -7,7 +7,7 @@ import os
 import logging
 from urllib2 import Request, urlopen, URLError, HTTPError
 
-# set your own environment
+# set your own environment variables
 HOOK_URL = os.getenv("HOOK_URL")
 SLACK_CHANNEL = os.getenv("SLACK_CHANNEL")
 CLOUD_WATCH_REGION = os.getenv("CLOUD_WATCH_REGION") 
@@ -35,7 +35,6 @@ def get_billing_total(start_date, end_date):
             ]
     }
     res = client.get_metric_statistics(**params)
-    print(res)
     if (res['ResponseMetadata']['HTTPStatusCode'] != 200):
         logger.error('Failed to get billing metrics.')
         exit(1)
@@ -65,7 +64,6 @@ def get_billing_field(start_date, end_date, field):
             ]
     }
     res = client.get_metric_statistics(**params)
-    print(res)
     if (res['ResponseMetadata']['HTTPStatusCode'] != 200):
         logger.error('Failed to get billing metrics.')
         exit(1)
@@ -108,7 +106,7 @@ def generate_slack_message(start_date, end_date):
 	formatted_start_date = start_date.strftime("%Y-%m-%d")
 	formatted_end_date = end_date.strftime("%Y-%m-%d")
 	
-	message = 'Estimated charges for ' + AWS_SERVICE + ' between ' + formatted_start_date + ' to ' + formatted_end_date + ' is as follows: \n\n' + 'AWS Data Trensfer                       US$ ' + AWSDataTrensfer + ' \n' + 'AWS Lambda                                 US$ ' + AWSLambda + ' \n' + 'AWS Marketplace                         US$ ' + AWSMarketplace + ' \n' + 'AWS Queue Service                     US$ ' + AWSQueueService + ' \n' + 'AWS Cloud Watch                        US$ ' + AWSCloudWatcha + ' \n' + 'AWS EC2                                       US$ ' + AWSEC2 + ' \n' + 'AWS S3                                          US$ ' + AWSS3 + ' \n' + 'AWS SNS                                       US$ ' + AWSSNS + ' \n' + 'AWS Key Management Service   US$ ' + awskms + ' \n' + '-------------------------------------------\n' + 'Total                                               US$ ' + total
+	message = 'Estimated charges for ' + AWS_SERVICE + ' between ' + formatted_start_date + ' to ' + formatted_end_date + ' is as follows: \n\n' + 'AWS Data Trensfer                       US$ ' + AWSDataTrensfer + ' \n' + 'AWS Lambda                                 US$ ' + AWSLambda + ' \n' + 'AWS Marketplace                         US$ ' + AWSMarketplace + ' \n' + 'AWS Queue Service                     US$ ' + AWSQueueService + ' \n' + 'AWS Cloud Watch                        US$ ' + AWSCloudWatcha + ' \n' + 'AWS EC2                                       US$ ' + AWSEC2 + ' \n' + 'AWS S3                                          US$ ' + AWSS3 + ' \n' + 'AWS SNS                                       US$ ' + AWSSNS + ' \n' + 'AWS Key Management Service   US$ ' + awskms + ' \n' + '------------------------------------------------\n' + 'Total                                               US$ ' + total
 	return message
 	
 
